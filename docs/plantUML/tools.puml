@@ -1,0 +1,34 @@
+@startuml
+title: Tools
+footer Page 9 of 9
+
+class ConsoleColors{
+    + Omitted: a list of public static final Strings representing ConsoleColors
+}
+
+class InputHandler{
+    - {static} EMPTY_STRING: String
+    - scanner: Scanner
+    - {static} instance: InputHandler
+    - {static} USER_INPUT_STOP: String
+    - InputHandler(scanner: Scanner)
+    + {static} getInstance(): InputHandler
+    + {static} nextLine(): String
+    + {static} getValueFromUser(msg: String, prefix: String): String
+    + {static} getDate(): Date
+    + setScanner(scanner: Scanner): void
+    + static collectMultipleStrings(subject: String): List<String>
+}
+
+class OutputHandler{
+    + {static} printJobPostingsList(List<JobPosting> jobPostings, String
+    jobStatus): void
+    + {static} printApplicationsList(applications: List<Application>): void
+    + {static} printUsersInfo(users: List<User>, userType: String): void
+    + {static} printApplicationInfo(application: Application): void
+    + {static} printApplicationInterviewsInfo(application: Application): void
+    + {static} printJobPostingsWithApplications(jobPostingsWithApplications: Map<JobPosting, List<Application>>): void
+    + {static} printJobPostingRequirements(jobPosting: JobPosting): void
+    + {static} formatDate(date: Date): String
+}
+@enduml

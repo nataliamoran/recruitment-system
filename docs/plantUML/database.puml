@@ -1,0 +1,113 @@
+@startuml
+title: Database
+footer Page 8 of 9
+class Document {
+    - path: Path
+    - {static} nextId: int
+    - name: String
+    - documentId: int
+    - ownerUsername: String
+    + Document(ownerUsername: String, path: String, name: String)
+    + getPath(): Path
+    + getName(): String
+    + getOwnerUsername(): String
+    + getDocumentId(): int
+    + getContents(): ArrayList<String>
+    + printContents(): void
+    + {static} clearNext(): void
+    + {static} setNextId(): void
+}
+
+UserDocuments *-- Document
+
+class UserDocuments {
+    - HashMap<Integer, Document> contents;
+    + UserDocuments()
+    + addDocument(document: Document): void
+    + getDocument(documentId: int): Document
+    + getDocument(name: String): Document
+    + removeDocument(documentId: int): void
+    + getContents(): HashMap<Integer, Document>
+    + size(): int
+}
+
+DocumentDatabase *-- UserDocuments
+
+class DocumentDatabase {
+    - docs: HashMap<String, UserDocuments>
+    - STORAGE_PATH: String
+    - TEST_PATH: String
+    - OG_PATH: String
+    - {static} instance: DocumentDatabase
+    + DocumentDatabase()
+    + {static} getInstance(): DocumentDatabase
+    + switchStorage(): void
+    + switchTest(): void
+    + getUserDocuments(username: String): UserDocuments
+    + size(): int
+    + addDocument(ownerUsername: String, path: String, name: String)
+    + updateUserDocuments(Document d): void
+    + getDocument(name: String, ownerUsername: String): Document
+    + getDocument(documentId: int): Document
+    + getDocument(documentId: int, ownerUsername: String): Document
+    + removeDocument(int documentId): void
+    + removeDocument(name: String, ownerUsername: String): void
+    + removeDocument(documentId: int, ownerUsername: String): void
+    + {static} setInstance(documentDatabase: DocumentDatabase): void
+    + getFilePath(ownerUsername: String, name: String): Path
+    + getPersonalPath(ownerUsername: String): Path
+    + addReferenceLetter(refereeUsername: String, applicantUsername: String, path: String)
+}
+
+class StoreLogin {
+    - userData: Path
+    + StoreLogin(userData: Path)
+    + StoreLogin(path: String)
+    + StoreLogin()
+    + addUser(username: String, password: String): void
+    + verifyLogin(username: String, password: String): boolean
+    + getUsernames(): ArrayList<String>
+    - checkValidCharacters(s: String): boolean
+    - getLogins(): HashMap<String, String>
+}
+
+class SaveAndLoad {
+    - {static} s: String
+    - {static} Path path: final
+    - {static} Path testPath: final
+    - {static} currentPath = path;: Path
+    - {static} applicationNextId: int
+    - {static} userNextId: int
+    - {static} jobPostingNextId: int
+    - {static} documentNextId: int
+    - {static} companyNextId: int
+    - {static} interviewNextId: int
+    + {static} switchPathRun(): void
+    + {static} switchPathTest(): void
+    + {static} saveProgram(): void
+    + {static} loadProgram(): void
+    - {static} userLoop(companies: List<Company>, users: List<User>): void
+    - {static} companyLoop(companies: List<Company>, users: List<User>): void
+    - {static} findCompany(companies: List<Company>, id: int): Company
+    - {static} getCompanyDict(companies: List<Company>): HashMap<Integer, Company>
+    - {static} getJobPostingDict(users: List<User>): HashMap<Application, Applicant>
+    - {static} jobPostingLoop(companies: List<Company>, users: List<User>): void
+}
+
+class GsonManager{
+    + serializeDocumentDatabase(DocumentDatabase documentDatabase): String
+    + deserializeDocumentDatabase(json: String): DocumentDatabase
+    + serializeRecruitmentSystem(recruitmentSystem: RecruitmentSystem): String
+    + deserializeRecruitmentSystem(json: String): RecruitmentSystem
+}
+
+GsonManager +-- InterfaceAdapter
+
+class InterfaceAdapter<T>{
+    + serialize(object: T, interfaceType: Type, context: JsonSerializationContext): JsonElement
+    + deserialize(elem: JsonElement, interfaceType: Type, context: JsonDeserializationContext): T
+    - typeForName(typeElem: JsonElement): Type
+    - get(wrapper: JsonObject, memberName: String): JsonElement
+}
+
+@enduml

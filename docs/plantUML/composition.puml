@@ -1,0 +1,271 @@
+@startuml
+title: Composition
+footer Page 1 of 9
+
+class Applicant {
+    - history: AccountHistory
+    - USER_TYPE: UserType
+    + Applicant(username: String, password: String, creationDate: Date)
+    + getHistory(): AccountHistory
+}
+
+Applicant *-- AccountHistory
+
+class AccountHistory {
+    - creationDate: Date
+    - applications: List<Application>
+    - {static} nextId
+    - id: int
+    - sinceLastApplicationClosure: Integer
+    + AccountHistory(creationDate: Date)
+    + getId(): int
+    + setSinceLastApplicationClosure(numDays: int): void
+    + getSinceLastApplicationClosure(): Integer
+    + getClosedApplications(): List<Application>
+    + getCreationDate(): Date
+    + getOpenApplications(): List<Application>
+    + addApplication(application: Application): void
+    + getApplications(): List<Application>
+    + updateAllTransient(applicant: Applicant): void
+    + replaceApplication(application: Application): void
+    + {static} setNextId(id: int): void
+}
+
+AccountHistory *-- Application
+
+class Application {
+    - job: JobPosting
+    - applicant: Applicant
+    - status: ApplicationStatus
+    - closedDate: Date
+    - interviews: List<Interview>
+    - interviewsTypesAttended: Map<String, Integer>
+    - {static} nextId: int
+    - id: int
+    + Application(job: JobPosting, applicant: Applicant)
+    + getId(): int
+    + setClosedDate(closedDate: Date): void
+    + getClosedDate(): Date
+    + isClosed(): boolean
+    + getSinceApplicationClosure(today: Date): int
+    + getJobPosting(): JobPosting
+    + getApplicant(): Applicant
+    + getApplicationStatus(): ApplicationStatus
+    + setApplicationStatus(status: ApplicationStatus): void
+    + getInterviewTypesAttended(): int
+    + incrementAttendedInterviewsByOne(): void
+    + getInterviews(): List<Interview>
+    + setInterviews(interview: Interview): void
+    + hasUndergoneAllInterviewRounds(): Boolean
+    + requireInterviewAttendancePerInterviewType(interviewType: String): Boolean
+    + updateAllTransient(): void
+    + setApplicant(applicant: Applicant): void
+    + setJob(job: JobPosting): void
+    + {static} setNextId(id: int): void
+}
+Application *-- JobPosting
+Application *-- Applicant
+
+class Company {
+    + name: String
+    + jobs: List<JobPosting>
+    + locations: List<String>
+    + interviewTypes: List<String>
+    + staff: List<User>
+    + {static} nextId: int
+    + id: int
+    + Company(name: String, interviewTypes: List<String>, locations: List<String>)
+    + getId(): int
+    + getName(): String
+    + getAllStaff(): List<User>
+    + getLocations(): List<String>
+    + getAllJobPostings(): List<JobPosting>
+    + getInterviewTypes(): List<String>
+    + addJobPosting(job: JobPosting): void
+    + addStaff(user: User): void
+    + getJobPostingPerId(jobId: int): JobPosting
+    + getStaffPerUserType(userType: UserType): List<User>
+    + getOpenJobPostings(): List<JobPosting>
+    + getApplicationPerID(applicationId: String): Application
+    + getApplicationsPerStatus(status: ApplicationStatus): List<Application>
+    + updateTransient(): void
+    + {static} setNextId(id: int): void
+}
+
+Company *-- JobPosting
+JobPosting *-- Company
+Company *-- Interviewer
+Company *-- Coordinator
+
+JobPosting *-- JobPostingRequirements
+
+class JobPosting {
+    - {static} nextId: int
+    - id: int
+    - title: String
+    - description: String
+    - location: String
+    - company: Company
+    - postedDate: Date
+    - requirements: List<String>
+    - jobPostingIsOpen: boolean
+    - applications: List<Application>
+    - interviews: List<Interview>
+    + JobPosting(title: String, description: String, company: Company, postedDate: Date,
+    requirements JobPostingRequirements)
+    + int getId()
+    + getApplications(): List<Application>
+    + getTitle(): String
+    + getDescription(): String
+    + setLocation(location: String): void
+    + getLocation(): String
+    + List<String> getRequirements()
+    + getInterviews(): List<Interview>
+    + setCompany(company: Company): void
+    + getCompany(): Company
+    + isOpen(): boolean
+    + setJobPostingIsOpen(value: boolean): void
+    + isApplicationsDeadlinePassed(today: Date): Boolean
+    + isFilled(): Boolean
+    + addApplication(application: Application): void
+    + addInterview(interview: Interview): void
+    + getApplication(applicationId: String): Application
+    + isReadyForHiring(today: Date): Boolean
+    + getApplicationsPerStatus(status: ApplicationStatus): List<Application>
+    + updateAllTransient(): void
+    + {static} setNextId(id: int): void
+}
+
+abstract class User {
+    - username: String
+    - password: String
+    - userType: UserType
+    - {static} nextId: int
+    - Id: int
+    + User(username: String, password: String, userType: UserType)
+    + getUsername(): String
+    + getPassword(): String
+    + setPassword(password: String): void
+    + getId(): int
+    + getUserType(): UserType
+    + {static} setNextId(nextId: int): void
+}
+
+class Interviewer {
+    - company: Company
+    - companyId: int
+    - interviewsToRun: List<Interview>
+    - locations: List<String>
+    + Interviewer(username: String, password: String, company: Company, locations: List<String> )
+    + getLocations(): List<String>
+    + getCompany(): Company
+    + getAllInterviewsToRun(): List<Interview>
+    + getCompanyId(): int
+    + addInterview(interview Interview): void
+    + removeInterview(interview Interview): void
+    + getInterviewWithId(id: String): Interview
+    + printIntervieweesInfo(): void
+    + updateAllTransient(company: Company): void
+}
+
+class Coordinator {
+    - company: Company
+    - companyId: int
+    - locations: List<String>
+    + Coordinator(username: String, password: String, company: Company)
+    + getLocations(): List<String>
+    + getCompany(): Company
+    + getCompanyId(): int
+    + updateAllTransient(company: Company): void
+}
+
+JobPosting *-- Interview
+JobPosting *-- Application
+
+class Interview {
+    - interviewer: Interviewer
+    - application: Application
+    - interviewType: String
+    - recommendation: String
+    - {static} nextId: int
+    - id: int
+    + getInterviewer(): Interviewer
+    + getApplication(): Application
+    + getInterviewType(): InterviewType
+    + getRecommendation(): String
+    + setRecommendation(newRecommendation String): void
+    + setInterviewer(interviewer: Interviewer): void
+    + setApplication(application: Application): void
+    + {static} setNextId(id: int): void
+    }
+
+Interview *-- Application
+Interview *-- Interviewer
+
+class Interviewer {
+    - company: Company
+    - companyId: int
+    - interviewsToRun: List<Interview>
+    - locations List<String>
+    + Interviewer(username: String, password: String, company: Company, locations: List<String>)
+    + getLocations(): List<String>
+    + getCompany(): Company
+    + getCompanyId(): int
+    + getAllInterviewsToRun(): List<Interview>
+    + addInterview(interview: Interview): void
+    + removeInterview(interview: Interview): void
+    + getInterviewWithId(id: String): Interview
+    + printIntervieweesInfo(): void
+    + updateAllTransient(company: Company): void
+}
+
+RecruitmentSystem *-- Company
+RecruitmentSystem *-- User
+
+class RecruitmentSystem {
+    - companies: List<Company>
+    - users: List<User>
+    + RecruitmentSystem()
+    + getAllCompanies(): List<Company>
+    + getAllUsers(): List<User>
+    + setAllCompanies(companies: List<Company>): void
+    + setAllUsers(): void
+    + addCompany(company: Company): void
+    + addUser(user: User): void
+    + getCompany(): Company
+    + getJobPosting(): JobPosting
+    + getUser(): User
+    + getUsersOfType(userType: UserType): List<User>
+    + getAllOpenJobPostings(): List<JobPosting>
+}
+
+RecruitmentSystemFactory *-- RecruitmentSystem
+class RecruitmentSystemFactory {
+    - {static} boolean testMode;
+    - {static} RecruitmentSystemProd: RecruitmentSystem
+    - {static} RecruitmentSystemTest: RecruitmentSystem
+    + {static} getRecruitmentSystem(): RecruitmentSystem
+    + {static} setTestMode(): void
+}
+
+class Main {
+    + {static} main(args: String[]): void
+}
+
+class JobPostingRequirements{
+    - requiredDocuments: List<String>
+    - applicationsDeadlineDate: Date
+    - tag: List<String>
+    - interviewTypeLimitsMap: Map<String, Integer>
+    + JobPostingRequirements(applicationsDeadlineDate: Date,
+    requiredDocuments: List<String>, tag: List<String>,
+    interviewTypeLimitsMap: Map<String, Integer>)
+    + getRequiredDocuments(): List<String>
+    + getTags(): List<String>
+    + void setTags(tagCollection: List<String>): void
+    + getApplicationsDeadlineDate(): Date
+    + getInterviewTypeLimitsMap(): Map<String, Integer>
+    + getInterviewTypeLimit(interviewType: String): Integer
+}
+
+@enduml

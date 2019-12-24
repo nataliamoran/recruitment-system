@@ -1,0 +1,81 @@
+@startuml
+title: Users
+footer Page 2 of 9
+
+User <|-- Applicant
+User <|-- Interviewer
+User <|-- Coordinator
+User <|-- Admin
+User <|-- Referee
+
+abstract class User {
+    - username: String
+    - password: String
+    - userType: UserType
+    - {static} nextId: int
+    - Id: int
+    + User(username: String, password: String, userType: UserType)
+    + getUsername(): String
+    + getPassword(): String
+    + setPassword(password: String): void
+    + getId(): int
+    + getUserType(): UserType
+    + {static} setNextId(nextId: int): void
+}
+
+class Applicant {
+    - history: AccountHistory
+    - documents: List<String>
+    - referenceLetters: ArrayList<Integer>
+    + Applicant(username: Sring, password: String, creationDate: Date)
+    + getHistory(): AccountHistory
+    + updateAllTransient(): void
+    + replaceApplication(application: Application): void
+    + addReferenceLetterId(n: int): void
+    + getReferenceLetterIds(): List<Integer>
+    + getDocumentsNames(): List<String>
+    + addDocumentName(docName: String): void
+    + removeAllDocumentsNames(): void
+}
+
+class Interviewer {
+    - company: Company
+    - companyId: int
+    - interviewsToRun: List<Interview>
+    - locations: List<String>
+    + Interviewer(username: Sring, password: String, company: Company, locations: List<String> )
+    + getLocations(): List<String>
+    + getCompany(): Company
+    + getAllInterviewsToRun(): List<Interview>
+    + getCompanyId(): int
+    + addInterview(interview Interview): void
+    + removeInterview(interview Interview): void
+    + getInterviewWithId(id: String): Interview
+    + printIntervieweesInfo(): void
+    + updateAllTransient(company: Company): void
+}
+
+class Coordinator {
+    - company: Company
+    - companyId: int
+    - locations: List<String>
+    + Coordinator(username: Sring, password: String, company: Company)
+    + getLocations(): List<String>
+    + getCompany(): Company
+    + getCompanyId(): int
+    + updateAllTransient(company: Company): void
+}
+
+class Referee {
+    - references: Map<String, List<Integer>>
+    - applicantList: List<User>
+    + Referee(username: String, password: String)
+    + addApplicant(applicant: Applicant): void
+    + getApplicantList(): List<User>
+}
+
+class Admin {
+    + Admin(username: String, password: String)
+}
+
+@enduml

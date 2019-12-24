@@ -1,0 +1,56 @@
+@startuml
+title: Background Actions
+footer Page 6 of 9
+
+BackgroundAction <|-- ApplicantBackgroundAction
+ApplicantBackgroundAction <|-- RemoveApplicantAllDocumentsAfter30DaysSinceLastApplicationClosureBackgroundAction
+ApplicantBackgroundAction <|-- CalculateNumDaysSinceLastApplClosedAction
+
+interface BackgroundAction {
+    # performAction()
+}
+
+abstract class ApplicantBackgroundAction {
+    # Applicant applicant
+    ApplicantBackgroundAction(applicant: Applicant)
+}
+
+class RemoveApplicantAllDocumentsAfter30DaysSinceLastApplicationClosureBackgroundAction {
+    - MAX_DAYS_TO_KEEP_DOCUMENT: int
+    + RemoveApplicantAllDocumentsAfter30DaysSinceLastApplicationClosureBackgroundAction(applicant Applicant)
+    + performAction(): void
+    + belowMaxDaysPassedSinceClosure(applicant: Applicant): boolean
+    + hasOpenApplications(applicant: Applicant): boolean
+}
+
+class CalculateNumDaysSinceLastApplClosedAction {
+    - today: Date
+    + CalculateNumDaysSinceLastApplClosedAction(applicant: Applicant)
+    + performAction(): void
+}
+
+abstract class InterviewerBackgroundAction {
+    - interviewer: Interviewer
+    + InterviewerBackgroundAction(interviewer: Interviewer)
+}
+
+BackgroundAction <|-- InterviewerBackgroundAction
+InterviewerBackgroundAction <|-- PrintOutInterviewsToRunDataBackgroundAction
+
+class PrintOutInterviewsToRunDataBackgroundAction {
+    + GetApplicantsInterviewScheduled(interviewer: Interviewer)
+    + performAction(): void
+}
+
+BackgroundAction <|-- UserBackgroundAction
+UserBackgroundAction <|-- HireBackgroundAction
+class HireBackgroundAction {
+    - today: Date
+    + HireBackgroundAction(today: Date)
+    + performAction(): void
+    - hireSingleCandidate(job: JobPosting): void
+}
+
+abstract class UserBackgroundAction
+
+@enduml

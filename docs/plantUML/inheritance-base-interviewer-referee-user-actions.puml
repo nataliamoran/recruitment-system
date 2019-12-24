@@ -1,0 +1,156 @@
+@startuml
+title: Base & Interviewer & Referee & User Actions
+footer Page 4 of 9
+
+interface Action {
+    + collectParameters(): void
+    + performAction(): void
+    + getDescription(): String
+    + getShortcut(): String
+}
+
+abstract class AbstractAction {
+    - description: String
+    - shortcut: String
+    + AbstractAction(shortcut: String, description: String)
+    + getDescription(): String
+    + getShortcut(): String
+}
+
+AbstractAction <|-- AdminAction
+AdminAction <|-- CreateCompanyAction
+CreateUserBaseAction <|-- CreateUserAction
+
+abstract class AdminAction{
+    # admin: Admin
+    + AdminAction(shortcut: String, description: String, admin: Admin)
+}
+
+class CreateCompanyAction{
+    - companyName: String
+    - interviewTypes: List<String>
+    - locations: List<String>
+    + CreateCompanyAction(admin: Admin)
+    + collectParameters(): void
+    + performAction(): void
+    - checkCompanyNameDuplicate(companyName: String)
+}
+
+class CreateUserAction{
+    + CreateUserAction()
+}
+
+Action <|-- AbstractAction
+AbstractAction <|-- CreateUserBaseAction
+
+class CreateUserBaseAction {
+    - {static} APPLICANT: String
+    - {static} COORDINATOR: String
+    - {static} INTERVIEWER: String
+    - {static} ADMIN: String
+    - {static} REFEREE: String
+    - {static} PREFIX: String
+    - username: String
+    - password: String
+    - userType: UserType
+    - company: Company
+    - today: Date
+    - locations: List<String>
+    - goToUserManagement: boolean
+    + collectParameters(): void
+    + performAction(): void
+    - createUser(userType: UserType): User
+    - {static} stringToUserType(str: String): UserType
+    - checkUsernameDuplicate(username: String): void
+    - chooseCompanyAndBranches(): void
+    - checkValidString(s: String): void
+}
+
+AbstractAction <|-- InterviewerAction
+InterviewerAction <|-- RunInterviewAction
+InterviewerAction <|-- GetIntervieweesAction
+
+abstract class InterviewerAction{
+    - Interviewer interviewer
+    + InterviewerAction(shortcut: String, description: String, interviewer: Interviewer)
+}
+
+class GetIntervieweesAction{
+    + GetIntervieweesAction(interviewer: Interviewer)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class RunInterviewAction{
+    - {static} INTERVIEW_RECOMMEND: String
+    - {static} INTERVIEW_REJECT: String
+    - {static} VALID_OPTIONS: List<String>
+    - {static} RUN_INTERVIEW_PREFIX: String
+    - interviewToRun: Interview
+    - rejectOrRecommendChoice: String
+    - recommendation: String
+    - today: Date
+    + RunInterview(interviewer: Interviewer, today: Date)
+    + collectParameters(): void
+    + performAction(): void
+    }
+
+AbstractAction <|-- RefereeAction
+RefereeAction <|-- UploadReferenceLetterAction
+RefereeAction <|-- ViewApplicantsAndPostsAction
+
+class RefereeAction{
+    # referee: Referee
+    + RefereeAction(shortcut: String, description: String, referee: Referee)
+}
+
+class UploadReferenceLetterAction {
+    - applicantUsername: String
+    - filePath: String
+    - applicant: Applicant
+    + UploadReferenceLetterAction(referee: Referee)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class ViewApplicantsAndPostsAction{
+    - applicantUsername: String
+    - filePath: String
+    - applicant: Applicant
+    + collectParameters(): void
+    + performAction(): void
+}
+
+AbstractAction <|-- UserAction
+CreateUserBaseAction <|-- SignUpAction
+UserAction <|-- LoginAction
+UserAction <|-- ForgotPasswordAction
+
+abstract class UserAction{
+    # User user;
+    # {static} RecruitmentSystem system;
+    + UserAction(shortcut: String, description: String)
+    + UserAction()
+}
+
+class SignUpAction {
+    + SignUpAction()
+}
+
+class LoginAction {
+    - password: String
+    - username: String
+    - today: Date
+    + LoginAction()
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class ForgotPasswordAction{
+    - username: String
+    + ForgotPasswordAction(): void
+    + collectParameters(): void
+    + performAction(): void
+}
+
+@enduml

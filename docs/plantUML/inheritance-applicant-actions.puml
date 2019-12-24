@@ -1,0 +1,108 @@
+@startuml
+title: Applicant Actions
+footer Page 3 of 9
+
+Action <|-- AbstractAction
+AbstractAction <|-- ApplicantAction
+ApplicantAction <|-- AddRefereeAction
+ApplicantAction <|-- ApplyForJobAction
+ApplicantAction <|-- GetAccountCreationDateAction
+ApplicantAction <|-- GetAllOpenJobPostingsAction
+ApplicantAction <|-- GetNumDaysSinceLastApplClosedAction
+ApplicantAction <|-- GetApplicationsAction
+ApplicantAction <|-- ReadDocumentAction
+ApplicantAction <|-- UploadDocumentAction
+ApplicantAction <|-- WithdrawApplicationAction
+
+interface Action {
+    + collectParameters(): void
+    + performAction(): void
+    + getDescription(): String
+    + getShortcut(): String
+}
+
+abstract class AbstractAction {
+    - description: String
+    - shortcut: String
+    + getDescription(): String
+    + getShortcut(): String
+}
+
+abstract class ApplicantAction {
+    # Applicant applicant
+    + ApplicantAction(shortcut: String, description: String, applicant: Applicant)
+}
+
+class AddRefereeAction {
+    - allReferees: List<User>
+    - referee: Referee
+    + AddRefereeAction(applicant: Applicant)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class ApplyForJobAction {
+    - jobId: int
+    - today: Date
+    + ApplyForJobAction(applicatn: Applicant, today Date)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class GetAccountCreationDateAction {
+    + GetAccountCreationDateAction(applicant: Applicant)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class GetAllOpenJobPostingsAction {
+    - tagToJobs: Map<String, List<JobPosting>>
+    - tagChoice: String
+    - allOpenJobPostings: List<JobPosting>
+    - sortingByTagChoice: String
+    + GetAllOpenJobPostingsAction(applicant: Applicant)
+    + collectParameters(): void
+    + performAction(): void
+    - sortJobPostingsByTags(): void
+}
+
+class GetNumDaysSinceLastApplClosedAction {
+    + GetNumDaysSinceLastApplClosedAction(applicant: Applicant)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class GetApplicationsAction {
+    - CURRENT: String
+    - PAST: String
+    - applicationType: String
+    + GetApplicationsAction(applicant: Applicant)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class ReadDocumentAction {
+    - document: Document
+    + ReadDocumentAction(applicant: Applicant)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class UploadDocumentAction {
+    - userName: String
+    - docName: String
+    - filePath: String
+    - {static} PREFIX: String
+    + UploadDocumentAction(applicant: Applicant)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class WithdrawApplicationAction {
+    - today: Date
+    - applicationId: int
+    + WithdrawApplicationAction(applicant: Applicant, today: Date)
+    + collectParameters(): void
+    + performAction(): void
+}
+@enduml

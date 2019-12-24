@@ -1,0 +1,63 @@
+{
+  "users": [
+    {
+      "type": "edu.csc207.recruitment.model.user.Applicant",
+      "data": {
+        "history": {
+          "creationDate": "May 1, 2019 12:00:00 AM",
+          "pastApplications": [],
+          "currentApplications": [],
+          "id": 2
+        },
+        "USER_TYPE": "APPLICANT",
+        "username": "user1",
+        "password": "password1",
+        "id": 3
+      }
+    },
+    {
+      "type": "edu.csc207.recruitment.model.user.Applicant",
+      "data": {
+        "history": {
+          "creationDate": "May 1, 2019 12:00:00 AM",
+          "pastApplications": [],
+          "currentApplications": [],
+          "id": 3
+        },
+        "USER_TYPE": "APPLICANT",
+        "username": "user2",
+        "password": "password",
+        "id": 4
+      }
+    },
+    {
+      "type": "edu.csc207.recruitment.model.user.Coordinator",
+      "data": {
+        "company": {
+          "name": "Apple",
+          "jobs": [],
+          "staff": [],
+          "id": 2
+        },
+        "USER_TYPE": "COORDINATOR",
+        "username": "user3",
+        "password": "password",
+        "id": 5
+      }
+    }
+  ],
+  "companies": [
+    {
+      "name": "Apple",
+      "jobs": [],
+      "staff": [],
+      "id": 2
+    },
+    {
+      "name": "Samsung",
+      "jobs": [],
+      "staff": [],
+      "id": 3
+    }
+  ]
+}

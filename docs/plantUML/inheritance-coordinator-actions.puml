@@ -1,0 +1,114 @@
+@startuml
+title: Coordinator Actions
+footer Page 5 of 9
+
+interface Action {
+    + collectParameters(): void
+    + performAction(): void
+    + getDescription(): String
+    + getShortcut(): String
+}
+
+abstract class AbstractAction {
+    - description: String
+    - shortcut: String
+    + AbstractAction(shortcut: String, description: String)
+    + getDescription(): String
+    + getShortcut(): String
+}
+
+Action <|-- AbstractAction
+AbstractAction <|-- CoordinatorAction
+CoordinatorAction <|-- CloseJobPostingAction
+CoordinatorAction <|-- CreateJobPostingAction
+CoordinatorAction <|-- HireApplicantAction
+CoordinatorAction <|-- GetApplicantsInfoAction
+CoordinatorAction <|-- CreateInterviewAction
+CoordinatorAction <|-- GetJobPostingApplicantsAction
+CoordinatorAction <|-- ReadReferenceLetterAction
+
+abstract class CoordinatorAction{
+    # coordinator: Coordinator
+    + CoordinatorAction(shortcut: String, description: String, coordinator: Coordinator)
+}
+
+class CloseJobPostingAction {
+    - jobPosting: JobPosting
+    - closingDate: Date
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class CreateJobPostingAction{
+    - title: String
+    - description: String
+    - location: String
+    - postedDate: Date
+    - applicationDeadlineDate: Date
+    - interviewType: Map<String, Integer>
+    - tags: List<String>
+    - requiredDocuments: List<String>
+    - {static} PREFIX: String
+    + CreateJobPostingAction(coordinator: Coordinator)
+    + collectParameters(): void
+    + performAction(): void
+    - getDateFromUser(dateType: String): Date
+    - chooseInterviewType(): void
+    - addTags(): void
+    - addLocation(): void
+    - addRequiredDocuments(): void
+}
+
+class HireApplicantAction{
+    - jobApplicationsForHiring: Map<JobPosting, List<Application>>
+    - jobToFill: JobPosting
+    - applicationToAccept: Application
+    - today: Date
+    + HireApplicantAction(coordinator: Coordinator, today: Date)
+    + collectParameters(): void
+    + performAction(): void
+    }
+
+class ReadReferenceLetterAction {
+    - applicant: Applicant
+    - lettersIds: List<Integer>
+    - allApplicants: List<User>
+    + ReadReferenceLetterAction(coordinator: Coordinator)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class GetApplicantsInfoAction {
+    - {static} APPLICANTS_DOCUMENTS: String
+    - {static} INFO_APPLIED_JOBS: String
+    - applicant: Applicant
+    - applicantUsername: String
+    - actionOptionChoice: String
+    - documentTitle: String
+    - {static} PREFIX: String
+    + GetApplicantsInfoAction(coordinator: Coordinator)
+    + collectParameters(): void
+    + performAction(): void
+    - getJobPostingsInCompany(): List<JobPosting>
+}
+
+class GetJobPostingApplicantsAction{
+    - jobPosting: JobPosting
+    + GetJobPostingApplicantsAction(coordinator: Coordinator)
+    + collectParameters(): void
+    + performAction(): void
+}
+
+class CreateInterviewAction {
+    - chosenApplications: Application
+    - chosenInterviewer: Interviewer
+    - chosenInterviewType: String
+    + CreateInterviewAction(coordinator: Coordinator)
+    + collectParameters(): void
+    + performAction(): void
+    - chooseApplication(): void
+    - chooseInterviewType(): InterviewType
+    - chooseInterviewer(): void
+}
+
+@enduml

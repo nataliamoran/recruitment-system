@@ -1,0 +1,56 @@
+@startuml
+title: Managers
+footer Page 7 of 9
+
+Manager <|-- AbstractManager
+AbstractManager <|-- ApplicantManager
+AbstractManager <|-- CoordinatorManager
+AbstractManager <|-- InterviewerManager
+AbstractManager <|-- UserManager
+AbstractManager <|-- AdminManager
+AbstractManager <|-- RefereeManager
+
+class ManagerFactory {
+    + {static} createManager(user: User, today: Date): Manager
+}
+
+class Manager{
+    ~ Manage(): void
+}
+
+abstract class AbstractManager{
+    # backgroundActions: List<BackgroundAction>
+    # printExitOption: boolean
+    - {static} USER_INPUT_EXIT: String
+    - userOptions: Map<String, Action>
+    + manage(): void
+    + performUserAction(choice: String): void
+    # addActionToUserOption(action: Action): void
+    - getUserMenuOption(): String
+}
+
+class AdminManager{
+    + AdminManager(admin: Admin)
+}
+
+class RefereeManager{
+    + RefereeManager(referee: Referee)
+}
+
+class ApplicantManager{
+    + ApplicantManager(applicant: Applicant, today: Date)
+}
+
+class CoordinatorManager{
+    + CoordinatorManager(coordinator: Coordinator)
+}
+
+class InterviewerManager {
+    + InterviewerManager(interview: Interviewer)
+}
+
+class UserManager {
+    + UserManager()
+}
+
+@enduml
